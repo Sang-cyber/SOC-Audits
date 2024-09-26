@@ -1,0 +1,88 @@
+These scripts can be tailored based on the specific requirements of a SOC 1 or SOC 2 audit. 
+
+### SOC 1 Audit Scripts
+
+1. **Access Control Review Script**
+   ```sql
+   SELECT *
+   FROM user_access
+   WHERE access_level NOT IN ('admin', 'read-only')
+   AND user_status = 'active';
+   ```
+   **Explanation:** This SQL script is used to review user access levels to ensure that no unauthorized users have access to sensitive systems. It retrieves active users with access levels that are not compliant with the organization’s policy.
+
+2. **Transaction Error Rate Calculation**
+   ```sql
+   SELECT COUNT(*) AS TotalTransactions,
+          SUM(CASE WHEN transaction_status = 'error' THEN 1 ELSE 0 END) AS ErrorTransactions,
+          (SUM(CASE WHEN transaction_status = 'error' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS ErrorRate
+   FROM transactions
+   WHERE transaction_date BETWEEN 'YYYY-MM-DD' AND 'YYYY-MM-DD';
+   ```
+   **Explanation:** This script calculates the error rate of transactions over a specified period. It helps auditors assess the accuracy and reliability of the transaction processing system.
+
+3. **Audit Trail Review Script**
+   ```sql
+   SELECT *
+   FROM audit_trail
+   WHERE action IN ('create', 'update', 'delete')
+   AND timestamp >= DATEADD(month, -1, GETDATE());
+   ```
+   **Explanation:** This script retrieves recent changes made to the system (such as creating, updating, or deleting records) to ensure that all actions are logged and can be audited. It provides insight into any potentially unauthorized changes.
+
+---
+
+### SOC 2 Audit Scripts
+
+1. **User Authentication Check Script**
+   ```sql
+   SELECT user_id, last_login, failed_attempts
+   FROM user_login
+   WHERE last_login < DATEADD(month, -3, GETDATE())
+   AND failed_attempts > 3;
+   ```
+   **Explanation:** This script identifies users who haven’t logged in for an extended period and have had multiple failed login attempts. It helps assess the effectiveness of the authentication controls in place.
+
+2. **Data Encryption Status Check**
+   ```sql
+   SELECT file_id, encryption_status
+   FROM data_files
+   WHERE encryption_status = 'not encrypted';
+   ```
+   **Explanation:** This script reviews the status of data encryption for stored files. It ensures that sensitive data is encrypted, in line with security policies.
+
+3. **Incident Response Log Review Script**
+   ```sql
+   SELECT incident_id, description, status, resolution_date
+   FROM incidents
+   WHERE incident_date >= DATEADD(month, -6, GETDATE());
+   ```
+   **Explanation:** This script retrieves incidents reported in the last six months, including their status and resolution dates. It helps auditors evaluate the effectiveness of the incident response process.
+
+---
+
+### General Audit Scripts
+
+1. **Compliance Check for Policies**
+   ```plaintext
+   SELECT *
+   FROM policies
+   WHERE effective_date <= GETDATE()
+   AND review_date < DATEADD(year, -1, GETDATE());
+   ```
+   **Explanation:** This script checks for policies that are outdated and have not been reviewed within the last year, helping to ensure that all policies are current and compliant.
+
+2. **System Configuration Review**
+   ```bash
+   cat /etc/services | grep 'port_number'
+   ```
+   **Explanation:** This shell script checks the system configuration files for specific service ports, ensuring that only necessary services are running and that unnecessary ports are closed.
+
+---
+
+### Usage and Adaptation
+- **Customizing Scripts:** Each organization may have unique data structures and policies; scripts should be adapted to fit those specifics.
+- **Integration with Tools:** These scripts can often be integrated into audit management software or executed as part of regular audits.
+- **Documentation:** Ensure that the results of these scripts are documented and reviewed, as they form an essential part of the audit trail.
+
+These scripts are a starting point for auditors to evaluate the effectiveness of internal controls during SOC audits, helping to ensure compliance with standards and improve overall security posture.
