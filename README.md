@@ -1,7 +1,5 @@
 # SOC-Audits
 
-Certainly! Here’s a detailed example for each type of audit (SOC 1 and SOC 2) to provide a clearer understanding of their applications.
-
 ### SOC 1 Audit Example: **A Payment Processing Company**
 
 #### Company Overview:
